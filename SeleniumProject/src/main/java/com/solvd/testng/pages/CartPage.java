@@ -1,10 +1,14 @@
 package com.solvd.testng.pages;
 
+import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
 
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,6 +30,12 @@ public class CartPage {
 
     @FindBy(xpath = "//a[@id='logout2']")
     private WebElement logoutButton;
+
+    @FindBy(xpath = "//a[contains(@onclick, 'deleteItem')]")
+    private List<WebElement> deleteButtons;
+
+    @FindBy(id = "tbodyid")
+    private WebElement cartTable;
 
     public CartPage(WebDriver driver) {
         this.driver = driver;
@@ -77,6 +87,24 @@ public class CartPage {
     public void logout() {
         logoutButton.click();
         System.out.println("Wylogowano użytkownika.");
+    }
+
+    public void deleteAllItems() {
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+
+        for (WebElement deleteButton : deleteButtons) {
+            deleteButton.click();
+            wait.until(ExpectedConditions.stalenessOf(deleteButton));
+        }
+
+        boolean isEmpty = cartTable.findElements(By.xpath("./tr")).isEmpty();
+        if (!isEmpty) {
+            throw new AssertionError("Cart is not empty after deleting items!");
+        }
+    }
+
+    public List<WebElement> getDeleteButtons() {
+        return deleteButtons;
     }
 
 }

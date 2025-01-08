@@ -1,0 +1,9 @@
+<!DOCTYPE suite SYSTEM "https://testng.org/testng-1.0.dtd">
+<suite name="ProductStoreTestSuite" parallel="methods" thread-count="5">
+    <test name="ProductStoreTests">
+        <parameter name="browser" value="chrome" />
+        <classes>
+            <class name="com.solvd.pageobjectpattern.ProductStoreTest" />
+        </classes>
+    </test>
+</suite>

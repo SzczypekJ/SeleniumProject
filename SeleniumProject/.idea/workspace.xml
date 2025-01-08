@@ -5,16 +5,12 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="311e9abd-9caf-4adb-b7c9-46b17c025536" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/solvd/testng/pages/AllProductsPage.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/solvd/testng/pages/CartPage.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/solvd/testng/pages/CheckoutPage.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/solvd/testng/pages/LoginPage.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/solvd/testng/pages/ProductPage.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/solvd/testng/utils/WebDriverFactory.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/test/java/com/solvd/pageobjectpattern/ProductStoreTest.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/solvd/testng/utils/DriverPool.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/testng.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/solvd/testng/pages/CartPage.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/solvd/testng/pages/CartPage.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/solvd/testng/utils/WebDriverFactory.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/com/solvd/pageobjectpattern/ProductStoreTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/com/solvd/pageobjectpattern/ProductStoreTest.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -47,6 +43,7 @@
     "Maven. [org.apache.maven.plugins:maven-archetype-plugin:RELEASE:generate].executor": "Run",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.git.unshallow": "true",
+    "TestNG.C:/Users/Jakub/Desktop/STUDIA/dodat/SeleniumProject/SeleniumProject/testng.xml.executor": "Run",
     "TestNG.ProductStoreTest.executor": "Run",
     "TestNG.ProductStoreTest.testLogin.executor": "Run",
     "git-widget-placeholder": "main",
@@ -71,7 +68,17 @@
       <recent name="com.solvd.testng.pages" />
     </key>
   </component>
-  <component name="RunManager" selected="TestNG.ProductStoreTest">
+  <component name="RunManager">
+    <configuration name="C:/Users/Jakub/Desktop/STUDIA/dodat/SeleniumProject/SeleniumProject/testng.xml" type="TestNG" temporary="true" nameIsGenerated="true">
+      <module name="SeleniumProject" />
+      <option name="SUITE_NAME" value="$PROJECT_DIR$/testng.xml" />
+      <option name="TEST_OBJECT" value="SUITE" />
+      <properties />
+      <listeners />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
     <configuration name="ProductStoreTest" type="TestNG" temporary="true" nameIsGenerated="true">
       <module name="SeleniumProject" />
       <shortenClasspath name="NONE" />
@@ -119,6 +126,7 @@
     </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="TestNG.C:/Users/Jakub/Desktop/STUDIA/dodat/SeleniumProject/SeleniumProject/testng.xml" />
         <item itemvalue="TestNG.ProductStoreTest" />
         <item itemvalue="TestNG.ProductStoreTest.testLogin" />
       </list>
@@ -141,7 +149,7 @@
       <option name="presentableId" value="Default" />
       <updated>1736258787170</updated>
       <workItem from="1736258788122" duration="8486000" />
-      <workItem from="1736320103973" duration="1745000" />
+      <workItem from="1736320103973" duration="6528000" />
     </task>
     <servers />
   </component>
