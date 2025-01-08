@@ -5,11 +5,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="311e9abd-9caf-4adb-b7c9-46b17c025536" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/solvd/testng/utils/DriverPool.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/testng.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/solvd/testng/pages/CartPage.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/solvd/testng/pages/CartPage.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/solvd/testng/utils/WebDriverFactory.java" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/src/test/java/com/solvd/pageobjectpattern/ProductStoreTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/com/solvd/pageobjectpattern/ProductStoreTest.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -68,7 +64,7 @@
       <recent name="com.solvd.testng.pages" />
     </key>
   </component>
-  <component name="RunManager">
+  <component name="RunManager" selected="TestNG.C:/Users/Jakub/Desktop/STUDIA/dodat/SeleniumProject/SeleniumProject/testng.xml">
     <configuration name="C:/Users/Jakub/Desktop/STUDIA/dodat/SeleniumProject/SeleniumProject/testng.xml" type="TestNG" temporary="true" nameIsGenerated="true">
       <module name="SeleniumProject" />
       <option name="SUITE_NAME" value="$PROJECT_DIR$/testng.xml" />
@@ -149,7 +145,7 @@
       <option name="presentableId" value="Default" />
       <updated>1736258787170</updated>
       <workItem from="1736258788122" duration="8486000" />
-      <workItem from="1736320103973" duration="6528000" />
+      <workItem from="1736320103973" duration="8529000" />
     </task>
     <servers />
   </component>
