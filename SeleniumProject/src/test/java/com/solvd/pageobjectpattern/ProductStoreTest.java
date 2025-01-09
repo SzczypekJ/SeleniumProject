@@ -8,7 +8,6 @@ import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.Assert;
-import org.testng.ITestContext;
 import org.testng.annotations.*;
 
 import java.time.Duration;
@@ -51,7 +50,7 @@ public class ProductStoreTest {
 
     @Test
     @Parameters({"browser"})
-    public void testAddSingleProductPurchase(@Optional("chrome") String browser) throws InterruptedException {
+    public void testAddSingleProductPurchase(@Optional("chrome") String browser) {
         WebDriver driver = DriverPool.getDriver(browser);
 
         try {
@@ -68,7 +67,7 @@ public class ProductStoreTest {
 
     @Test
     @Parameters({"browser"})
-    public void testPurchaseProductWithList(@Optional("chrome") String browser) throws InterruptedException {
+    public void testPurchaseProductWithList(@Optional("chrome") String browser) {
         WebDriver driver = DriverPool.getDriver(browser);
 
         try {
