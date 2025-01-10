@@ -43,25 +43,30 @@ public class CartPage {
     }
 
     public List<String> getProductNamesInCart() {
-        List<String> productNames = new ArrayList<>();
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+        wait.withMessage("Product names are not visible in the cart!")
+                .until(ExpectedConditions.visibilityOfAllElements(productNamesInCart));
 
-        for (WebElement productName : productNamesInCart) {
-            productNames.add(productName.getText());
+        if (productNamesInCart.isEmpty()) {
+            throw new IllegalStateException("No product names found in the cart!");
         }
-        return productNames;
+
+        return productNamesInCart.stream()
+                .map(WebElement::getText)
+                .toList();
     }
+
 
     public List<WebElement> getProductNamesInCartElement() {
         return productNamesInCart;
     }
 
     public List<String> getProductPricesInCart() {
-        List<String> productPrices = new ArrayList<>();
-        for (WebElement productPrice : productPricesInCart) {
-            String rawPrice = productPrice.getText();
-            productPrices.add(rawPrice.replaceAll("[^0-9]", ""));
-        }
-        return productPrices;
+
+        return productPricesInCart.stream()
+                .map(WebElement::getText)
+                .map(rawPrice -> rawPrice.replaceAll("[^0-9]", ""))
+                .toList();
     }
 
     public List<WebElement> getProductPricesInCartElement() {
@@ -73,8 +78,17 @@ public class CartPage {
     }
 
     public WebElement getProductNameInTheCartElement() {
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+        wait.withMessage("No product names found in the cart!")
+                .until(ExpectedConditions.visibilityOfAllElements(productNamesInCart));
+
+        if (productNamesInCart.isEmpty()) {
+            throw new IllegalStateException("No product names found in the cart!");
+        }
+
         return productNamesInCart.get(0);
     }
+
 
     public WebElement getProductPriceInTheCartElement() {
         return productPricesInCart.get(0);

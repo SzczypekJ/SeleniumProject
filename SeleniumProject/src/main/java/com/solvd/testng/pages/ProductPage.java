@@ -12,7 +12,7 @@ public class ProductPage {
     @FindBy(xpath = "//h3[@class='price-container']")
     private WebElement priceContainer;
 
-    @FindBy(xpath = "//a[@onclick='addToCart(3)']")
+    @FindBy(xpath = "//a[@class='btn btn-success btn-lg']")
     private WebElement addToCartButton;
 
     @FindBy(xpath = "//a[@id='cartur']")

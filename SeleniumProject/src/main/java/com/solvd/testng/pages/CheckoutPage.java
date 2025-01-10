@@ -1,5 +1,6 @@
 package com.solvd.testng.pages;
 
+import com.solvd.testng.utils.Person;
 import lombok.Getter;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -43,13 +44,21 @@ public class CheckoutPage {
         PageFactory.initElements(driver, this);
     }
 
-    public void fillCheckoutDetails(String name, String country, String city, String card, String month, String year) {
-        nameField.sendKeys(name);
-        countryField.sendKeys(country);
-        cityField.sendKeys(city);
-        cardField.sendKeys(card);
-        monthField.sendKeys(month);
-        yearField.sendKeys(year);
+//    public void fillCheckoutDetails(String name, String country, String city, String card, String month, String year) {
+//        nameField.sendKeys(name);
+//        countryField.sendKeys(country);
+//        cityField.sendKeys(city);
+//        cardField.sendKeys(card);
+//        monthField.sendKeys(month);
+//        yearField.sendKeys(year);
+//    }
+    public void fillCheckoutDetails(Person person) {
+        nameField.sendKeys(person.getName());
+        countryField.sendKeys(person.getCountry());
+        cityField.sendKeys(person.getCity());
+        cardField.sendKeys(person.getCreditCard());
+        monthField.sendKeys(person.getMonth());
+        yearField.sendKeys(person.getYear());
     }
 
     public void completePurchase() {

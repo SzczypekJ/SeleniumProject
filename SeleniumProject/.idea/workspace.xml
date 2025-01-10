@@ -5,8 +5,14 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="311e9abd-9caf-4adb-b7c9-46b17c025536" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/solvd/testng/utils/Person.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/solvd/testng/pages/AllProductsPage.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/solvd/testng/pages/AllProductsPage.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/solvd/testng/pages/CartPage.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/solvd/testng/pages/CartPage.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/solvd/testng/pages/CheckoutPage.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/solvd/testng/pages/CheckoutPage.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/solvd/testng/pages/ProductPage.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/solvd/testng/pages/ProductPage.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/test/java/com/solvd/pageobjectpattern/ProductStoreTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/com/solvd/pageobjectpattern/ProductStoreTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/testng.xml" beforeDir="false" afterPath="$PROJECT_DIR$/testng.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -34,26 +40,29 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;Maven. [org.apache.maven.plugins:maven-archetype-plugin:RELEASE:generate].executor&quot;: &quot;Run&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
-    &quot;TestNG.C:/Users/Jakub/Desktop/STUDIA/dodat/SeleniumProject/SeleniumProject/testng.xml.executor&quot;: &quot;Run&quot;,
-    &quot;TestNG.ProductStoreTest.executor&quot;: &quot;Run&quot;,
-    &quot;TestNG.ProductStoreTest.testLogin.executor&quot;: &quot;Run&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
-    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;C:/Users/Jakub/Desktop/STUDIA/dodat/SeleniumProject/SeleniumProject&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;editor.preferences.fonts.default&quot;,
-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "Maven. [org.apache.maven.plugins:maven-archetype-plugin:RELEASE:generate].executor": "Run",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "TestNG.C:/Users/Jakub/Desktop/STUDIA/dodat/SeleniumProject/SeleniumProject/testng.xml.executor": "Run",
+    "TestNG.ProductStoreTest.executor": "Run",
+    "TestNG.ProductStoreTest.testAddProductToCart.executor": "Run",
+    "TestNG.ProductStoreTest.testAddSingleProductPurchase.executor": "Run",
+    "TestNG.ProductStoreTest.testLogin.executor": "Run",
+    "TestNG.ProductStoreTest.testPurchaseProductWithList.executor": "Run",
+    "git-widget-placeholder": "main",
+    "kotlin-language-version-configured": "true",
+    "last_opened_file_path": "C:/Users/Jakub/Desktop/STUDIA/dodat/SeleniumProject/SeleniumProject",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "settings.editor.selected.configurable": "editor.preferences.fonts.default",
+    "vue.rearranger.settings.migration": "true"
   }
-}</component>
+}]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="C:\Users\Jakub\Desktop\STUDIA\dodat\SeleniumProject\SeleniumProject\src\test\java\com\solvd\pageobjectpattern" />
@@ -102,7 +111,7 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="ProductStoreTest.testLogin" type="TestNG" temporary="true" nameIsGenerated="true">
+    <configuration name="ProductStoreTest.testAddProductToCart" type="TestNG" temporary="true" nameIsGenerated="true">
       <module name="SeleniumProject" />
       <extension name="coverage">
         <pattern>
@@ -112,7 +121,43 @@
       </extension>
       <option name="PACKAGE_NAME" value="com.solvd.pageobjectpattern" />
       <option name="MAIN_CLASS_NAME" value="com.solvd.pageobjectpattern.ProductStoreTest" />
-      <option name="METHOD_NAME" value="testLogin" />
+      <option name="METHOD_NAME" value="testAddProductToCart" />
+      <option name="TEST_OBJECT" value="METHOD" />
+      <properties />
+      <listeners />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="ProductStoreTest.testAddSingleProductPurchase" type="TestNG" temporary="true" nameIsGenerated="true">
+      <module name="SeleniumProject" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="com.solvd.pageobjectpattern.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="com.solvd.pageobjectpattern" />
+      <option name="MAIN_CLASS_NAME" value="com.solvd.pageobjectpattern.ProductStoreTest" />
+      <option name="METHOD_NAME" value="testAddSingleProductPurchase" />
+      <option name="TEST_OBJECT" value="METHOD" />
+      <properties />
+      <listeners />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="ProductStoreTest.testPurchaseProductWithList" type="TestNG" temporary="true" nameIsGenerated="true">
+      <module name="SeleniumProject" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="com.solvd.pageobjectpattern.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="com.solvd.pageobjectpattern" />
+      <option name="MAIN_CLASS_NAME" value="com.solvd.pageobjectpattern.ProductStoreTest" />
+      <option name="METHOD_NAME" value="testPurchaseProductWithList" />
       <option name="TEST_OBJECT" value="METHOD" />
       <properties />
       <listeners />
@@ -123,8 +168,10 @@
     <recent_temporary>
       <list>
         <item itemvalue="TestNG.C:/Users/Jakub/Desktop/STUDIA/dodat/SeleniumProject/SeleniumProject/testng.xml" />
+        <item itemvalue="TestNG.ProductStoreTest.testPurchaseProductWithList" />
+        <item itemvalue="TestNG.ProductStoreTest.testAddProductToCart" />
+        <item itemvalue="TestNG.ProductStoreTest.testAddSingleProductPurchase" />
         <item itemvalue="TestNG.ProductStoreTest" />
-        <item itemvalue="TestNG.ProductStoreTest.testLogin" />
       </list>
     </recent_temporary>
   </component>
@@ -146,7 +193,8 @@
       <updated>1736258787170</updated>
       <workItem from="1736258788122" duration="8486000" />
       <workItem from="1736320103973" duration="19456000" />
-      <workItem from="1736408561963" duration="7470000" />
+      <workItem from="1736408561963" duration="9978000" />
+      <workItem from="1736497763772" duration="18444000" />
     </task>
     <servers />
   </component>

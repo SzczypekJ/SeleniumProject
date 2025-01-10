@@ -17,9 +17,6 @@ public class AllProductsPage {
 
     private WebDriver driver;
 
-    @FindBy(xpath = "//a[@href='prod.html?idp_=3' and @class='hrefch']")
-    private WebElement nexusProduct;
-
     @FindBy(xpath = "//a[@class='hrefch']")
     private List<WebElement> productList;
 
@@ -37,76 +34,37 @@ public class AllProductsPage {
         PageFactory.initElements(driver, this);
     }
 
-    public void selectProduct() {
-        nexusProduct.click();
+    public void selectProductByIndex(int index) throws InterruptedException {
+        Thread.sleep(2000);
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+
+        // Re-fetch the product list to avoid stale references
+        List<WebElement> updatedProductList = wait.until(
+                ExpectedConditions.presenceOfAllElementsLocatedBy(By.xpath("//a[@class='hrefch']")));
+
+        if (index >= updatedProductList.size()) {
+            throw new IndexOutOfBoundsException("Index out of bounds: " + index);
+        }
+
+        WebElement product = wait.withMessage("Product is not visible in the list!")
+                .until(ExpectedConditions.elementToBeClickable(updatedProductList.get(index)));
+
+        product.click();
     }
 
-    public String getProductName() {
-        return nexusProduct.getText();
-    }
-
-    public WebElement getProductNameElement() {
-        return nexusProduct;
+    public List<String> getProductNames() throws InterruptedException {
+        Thread.sleep(2000);
+        return productList.stream()
+                .map(WebElement::getText)
+                .toList();
     }
 
     public void goToHome() {
         Home.click();
     }
 
-    /**
-     * Fetches the price of a product currently displayed.
-     * Assumes the product page is already open.
-     *
-     * @return Price of the product as a String.
-     */
-    private String fetchProductPrice() {
-        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
-        WebElement priceElement = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//h3[@class='price-container']")));
-        return priceElement.getText().replaceAll("[^0-9]", "");
-    }
-
-    /**
-     * I will add a new product using this method
-     * Here we are working on the list of web elements which is more preferable way to work with elements
-     * The element will be take by index and it will be added to the cart
-     * Fetches the product's price before adding it to the cart.
-     * After adding the product to the cart I will go back to the main page
-     * @param index Index of the product in the product list.
-     * @return Price of the product as a String.
-     */
-    public String addProductToCartByIndex(int index) {
-
-        productList.get(index).click();
-
-        String productPrice = fetchProductPrice();
-
-        String dynamicXPath = String.format("//a[@onclick='addToCart(%d)']", index + 1);
-
-        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
-
-        WebElement addToCartButton = wait.until(ExpectedConditions.elementToBeClickable(By.xpath(dynamicXPath)));
-        addToCartButton.click();
-
-        try {
-            wait.until(ExpectedConditions.alertIsPresent());
-            driver.switchTo().alert().accept();
-        } catch (Exception e) {
-            System.out.println("Alert not found: " + e.getMessage());
-        }
-
-        goToHome();
-        return productPrice;
-    }
-
-    public String getProductNameByIndex(int index) {
-        return productList.get(index).getText();
-    }
 
     public void goToCart() {
         cartButton.click();
-    }
-
-    public void logout() {
-        logoutButton.click();
     }
 }

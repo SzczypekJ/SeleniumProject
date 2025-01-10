@@ -2,8 +2,14 @@ package com.solvd.pageobjectpattern;
 
 import com.solvd.testng.pages.*;
 import com.solvd.testng.utils.DriverPool;
+import com.solvd.testng.utils.Person;
+import io.github.bonigarcia.wdm.WebDriverManager;
 import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.edge.EdgeDriver;
+import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
@@ -13,176 +19,237 @@ import org.testng.annotations.*;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 public class ProductStoreTest {
 
-    @Test
+    private static ThreadLocal<WebDriver> threadLocalDriver = new ThreadLocal<>();
+
     @Parameters({"browser"})
-    public void testLogin(@Optional("chrome") String browser) {
-        WebDriver driver = DriverPool.getDriver(browser);
-        try {
-            login(driver, "jakubszczypek", "1234");
-        } finally {
-            DriverPool.quitDriver();
+    @BeforeMethod
+    public void setUp(@Optional("chrome") String browser) {
+        WebDriver driver;
+        switch (browser.toLowerCase()) {
+            case "chrome":
+                WebDriverManager.chromedriver().setup();
+                driver = new ChromeDriver();
+                break;
+            case "firefox":
+                WebDriverManager.firefoxdriver().setup();
+                driver = new FirefoxDriver();
+                break;
+            case "edge":
+                WebDriverManager.edgedriver().setup();
+                driver = new EdgeDriver();
+                break;
+            default:
+                throw new IllegalArgumentException("Browser not supported: " + browser);
         }
-    }
-
-    @Test
-    @Parameters({"browser"})
-    public void testAddProductToCart(@Optional("chrome") String browser) {
-        WebDriver driver = DriverPool.getDriver(browser);
-        try {
-            // Log in - the helpful method to log in - the reuse of code
-            login(driver, "jakubszczypek2", "1234");
-
-            // Adds product to the cart - helpful method which reduce amount of code
-            addProductToCart(driver);
-
-            CartPage cartPage = new CartPage(driver);
-            cartPage.deleteAllItems();
-            Assert.assertTrue(cartPage.getDeleteButtons().isEmpty(),
-                    "Cart is not empty after removing all items");
-
-        } finally {
-            DriverPool.quitDriver();
-        }
-    }
-
-    @Test
-    @Parameters({"browser"})
-    public void testAddSingleProductPurchase(@Optional("chrome") String browser) {
-        WebDriver driver = DriverPool.getDriver(browser);
-
-        try {
-            login(driver, "jakubszczypek3", "1234");
-
-            String price = addProductToCart(driver);
-            testPurchaseProduct(driver, price);
-
-        } finally {
-            DriverPool.quitDriver();
-        }
+        driver.manage().window().maximize();
+        driver.manage().deleteAllCookies();
+        driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
+        threadLocalDriver.set(driver);
     }
 
 
+    @AfterMethod
+    public void tearDown() {
+        WebDriver driver = threadLocalDriver.get();
+        if (driver != null) {
+            try {
+                driver.quit();
+            } catch (Exception e) {
+                System.err.println("Error while quitting driver: " + e.getMessage());
+            } finally {
+                threadLocalDriver.remove();
+            }
+        }
+    }
+
+    public WebDriver getDriver() {
+        return threadLocalDriver.get();
+    }
+
+
     @Test
-    @Parameters({"browser"})
-    public void testPurchaseProductWithList(@Optional("chrome") String browser) {
-        WebDriver driver = DriverPool.getDriver(browser);
+    public void testLogin() {
+        WebDriver driver = getDriver();
+        login(driver, "jakubszczypek", "1234");
+        assertLogin(driver, "jakubszczypek");
+    }
 
-        try {
-            login(driver, "jakubszczypek4", "1234");
+    @Test
+    public void testAddProductToCart() throws InterruptedException {
+        WebDriver driver = getDriver();
+        // Log in - the helpful method to log in - the reuse of code
+        login(driver, "jakubszczypek2", "1234");
 
-            AllProductsPage allProductsPage = new AllProductsPage(driver);
-            waitForConditionWithMessage(driver,
-                    ExpectedConditions.visibilityOfAllElements(allProductsPage.getProductList()),
-                    "No products found on the page!");
+        // Adds product to the cart - helpful method which reduce amount of code
+        List<String> informations = addProductToCartByIndex(driver, 0);
+        Assert.assertNotNull(informations, "Product information should not be null!");
+        Assert.assertFalse(informations.isEmpty(), "Product information should not be empty!");
 
-            List<String> namesOfProducts = new ArrayList<>();
-            List<String> pricesOfProducts = new ArrayList<>();
+        String productName  = informations.get(0);
+        String price = informations.get(1);
 
-            // Product 1
-            namesOfProducts.add(allProductsPage.getProductNameByIndex(0));
-            pricesOfProducts.add(allProductsPage.addProductToCartByIndex(0));
+        ProductPage productPage = new ProductPage(driver);
+        productPage.goToCart();
 
-            // Product 2
-            namesOfProducts.add(allProductsPage.getProductNameByIndex(1));
-            pricesOfProducts.add(allProductsPage.addProductToCartByIndex(1));
+        CartPage cartPage = new CartPage(driver);
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+        wait.withMessage("The cart is not loaded properly!")
+                .until(ExpectedConditions.visibilityOfAllElements(cartPage.getProductNamesInCartElement()));
 
-            // Product 3
-            namesOfProducts.add(allProductsPage.getProductNameByIndex(5));
-            pricesOfProducts.add(allProductsPage.addProductToCartByIndex(5));
+        assertsInCart(driver, productName, price);
 
-            allProductsPage.goToCart();
+        deleteProductsInTheCartAndCheckIt(driver);
+    }
 
-            CartPage cartPage = new CartPage(driver);
-            waitForConditionWithMessage(driver,
-                    ExpectedConditions.visibilityOfAllElements(cartPage.getProductNamesInCartElement()),
-                    "The elements Product names in the cart were not found in 10 seconds!"
-            );
+    @Test
+    public void testAddSingleProductPurchase() throws InterruptedException {
+        WebDriver driver = getDriver();
 
-            waitForConditionWithMessage(driver,
-                    ExpectedConditions.visibilityOfAllElements(cartPage.getProductPricesInCartElement()),
-                    "The elements Product prices in the cart were not found in 10 seconds!");
+        login(driver, "jakubszczypek3", "1234");
 
-            List<String> cartProductNames = cartPage.getProductNamesInCart();
-            List<String> cartProductPrices = cartPage.getProductPricesInCart();
+        AllProductsPage allProductsPage = new AllProductsPage(driver);
+        int size = allProductsPage.getProductList().size();
+        int index = 3;
+        if (index < size) {
+            List<String> informations = addProductToCartByIndex(driver, 3);
 
-            // Sort lists using stream
-            namesOfProducts = namesOfProducts.stream().sorted().toList();
-            cartProductNames = cartProductNames.stream().sorted().toList();
-            pricesOfProducts = pricesOfProducts.stream().sorted().toList();
-            cartProductPrices = cartProductPrices.stream().sorted().toList();
+            String price = informations.get(1);
+            ProductPage productPage = new ProductPage(driver);
+            productPage.goToCart();
 
-            Assert.assertEquals(cartProductNames, namesOfProducts,
-                    "Product names in the cart do not match the selected products!");
-            Assert.assertEquals(cartProductPrices, pricesOfProducts,
-                    "Product prices in the cart do not match the selected products!");
-
-            String totalPrice = cartPage.getTotalPrice();
-            int actualTotalPrice = Integer.parseInt(totalPrice);
-
-            int expectedTotalPrice = cartProductPrices.stream()
-                    .mapToInt(Integer::parseInt)
-                    .sum();
-
-            Assert.assertEquals(actualTotalPrice, expectedTotalPrice, "Total price mismatch!");
-
-            testPurchaseProduct(driver, totalPrice);
-        } finally {
-            DriverPool.quitDriver();
+            PurchaseProduct(driver, price);
+        } else {
+            throw new IndexOutOfBoundsException("Index is out of bounds: " + index + " for list of size: " + size + "!");
         }
     }
 
 
-    public void testPurchaseProduct(WebDriver driver, String totalPrice) {
-        CheckoutPage checkoutPage= new CheckoutPage(driver);
+    @Test
+    public void testPurchaseProductWithList() throws InterruptedException {
+        WebDriver driver = getDriver();
+
+        login(driver, "jakubszczypek4", "1234");
+        AllProductsPage allProductsPage = new AllProductsPage(driver);
+
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+        Thread.sleep(2000);
+        wait.withMessage("No products found on the page!")
+                .until(ExpectedConditions.visibilityOfAllElements(allProductsPage.getProductList()));
+
+        List<String> allNamesOfProducts  = allProductsPage.getProductNames();
+        int size = allNamesOfProducts .size();
+
+        List<String> selectedProductNames = new ArrayList<>();
+        List<String> pricesOfProducts = new ArrayList<>();
+        List<Integer> indexes = List.of(0, 1, 5);
+
+        for (int index : indexes) {
+            if (index < size) {
+                List<String> informations = addProductToCartByIndex(driver, index);
+
+                selectedProductNames.add(allNamesOfProducts.get(index));
+                pricesOfProducts.add(informations.get(1));
+            } else {
+                System.out.println("Index " + index + " is out of bounds for list of size: " + size);
+            }
+        }
+
+        if (pricesOfProducts.size() < indexes.size()) {
+            throw new IllegalStateException("Not all products were added to the cart!");
+        }
+
+        allProductsPage.goToCart();
+
+        CartPage cartPage = new CartPage(driver);
+        wait.withMessage("The elements Product names in the cart were not found in 10 seconds!")
+                .until(ExpectedConditions.visibilityOfAllElements(cartPage.getProductNamesInCartElement()));
+
+        wait.withMessage("The elements Product prices in the cart were not found in 10 seconds!")
+                .until(ExpectedConditions.visibilityOfAllElements(cartPage.getProductPricesInCartElement()));
+
+        List<String> cartProductNames = cartPage.getProductNamesInCart();
+        List<String> cartProductPrices = cartPage.getProductPricesInCart();
+
+        // Sort lists using stream
+        selectedProductNames = selectedProductNames.stream().sorted().toList();
+        cartProductNames = cartProductNames.stream().sorted().toList();
+        pricesOfProducts = pricesOfProducts.stream().sorted().toList();
+        cartProductPrices = cartProductPrices.stream().sorted().toList();
+
+        Assert.assertEquals(cartProductNames, selectedProductNames,
+                "Product names in the cart do not match the selected products!");
+        Assert.assertEquals(cartProductPrices, pricesOfProducts,
+                "Product prices in the cart do not match the selected products!");
+
+        String totalPrice = cartPage.getTotalPrice();
+        int actualTotalPrice = Integer.parseInt(totalPrice);
+
+        int expectedTotalPrice = cartProductPrices.stream()
+                .mapToInt(Integer::parseInt)
+                .sum();
+
+        Assert.assertEquals(actualTotalPrice, expectedTotalPrice, "Total price mismatch!");
+
+        PurchaseProduct(driver, totalPrice);
+    }
+
+
+    public void PurchaseProduct(WebDriver driver, String totalPrice) {
+        CheckoutPage checkoutPage = new CheckoutPage(driver);
 
         CartPage cartPage = new CartPage(driver);
         cartPage.placeOrder();
 
-        waitForConditionWithMessage(driver,
-                ExpectedConditions.visibilityOf(checkoutPage.getNameField()),
-                "The element Name field was not found in 10 seconds!");
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+        wait.withMessage("The element Name field was not found in 10 seconds!")
+                .until(ExpectedConditions.visibilityOf(checkoutPage.getNameField()));
 
-        waitForConditionWithMessage(driver,
-                ExpectedConditions.visibilityOf(checkoutPage.getCountryField()),
-                "The element Country field was not found in 10 seconds!");
+        wait.withMessage("The element Country field was not found in 10 seconds!")
+                .until(ExpectedConditions.visibilityOf(checkoutPage.getCountryField()));
 
-        waitForConditionWithMessage(driver,
-                ExpectedConditions.visibilityOf(checkoutPage.getCityField()),
-                "The element City field was not found in 10 seconds!");
+        wait.withMessage("The element City field was not found in 10 seconds!").until(ExpectedConditions.visibilityOf(checkoutPage.getCityField()));
 
-        waitForConditionWithMessage(driver,
-                ExpectedConditions.visibilityOf(checkoutPage.getCardField()),
-                "The element Card field was not found in 10 seconds!");
+        wait.withMessage("The element Card field was not found in 10 seconds!")
+                .until(ExpectedConditions.visibilityOf(checkoutPage.getCardField()));
 
-        waitForConditionWithMessage(driver,
-                ExpectedConditions.visibilityOf(checkoutPage.getMonthField()),
-                "The element Month field was not found in 10 seconds!");
+        wait.withMessage("The element Month field was not found in 10 seconds!")
+                .until(ExpectedConditions.visibilityOf(checkoutPage.getMonthField()));
 
-        waitForConditionWithMessage(driver,
-                ExpectedConditions.visibilityOf(checkoutPage.getYearField()),
-                "The element Year field was not found in 10 seconds!");
+        wait.withMessage("The element Year field was not found in 10 seconds!")
+                .until(ExpectedConditions.visibilityOf(checkoutPage.getYearField()));
 
         // Filling the purchase details
-        String name = "Jakub";
-        String country = "Poland";
-        String city = "Cracow";
-        String creditCard = "4111111111111111";
-        String month = "January";
-        String year = "2024";
+        Person person = new Person("Jakub", "Poland", "Cracow", "411111111111", "December", "2025");
 
-        checkoutPage.fillCheckoutDetails(name, country, city, creditCard, month, year);
+//        checkoutPage.fillCheckoutDetails(person.getName(),
+//                person.getCountry(),
+//                person.getCity(),
+//                person.getCreditCard(),
+//                person.getMonth(),
+//                person.getYear());
 
-        waitForConditionWithMessage(driver,
-                ExpectedConditions.elementToBeClickable(checkoutPage.getPurchaseButton()),
-                "The element Purchase button was not found in 10 seconds!");
+        checkoutPage.fillCheckoutDetails(person);
+
+        wait.withMessage("The element Purchase button was not found in 10 seconds!")
+                .until(ExpectedConditions.elementToBeClickable(checkoutPage.getPurchaseButton()));
 
         checkoutPage.completePurchase();
-        waitForConditionWithMessage(driver,
-                ExpectedConditions.visibilityOf(checkoutPage.getPurchaseDetailsElement()),
-                "The element Purchase details was not found in 10 seconds!");
+        wait.withMessage("The element Purchase details was not found in 10 seconds!")
+                .until(ExpectedConditions.visibilityOf(checkoutPage.getPurchaseDetailsElement()));
+
+        // Check if the details of purchase are okay
+        assertPurchaseDetails(driver, totalPrice, person.getCreditCard(), person.getName());
+
+        // Confirm the purchase
+        checkoutPage.confirmPurchase();
+    }
+
+    public void assertPurchaseDetails(WebDriver driver, String totalPrice, String creditCard, String name) {
+        CheckoutPage checkoutPage = new CheckoutPage(driver);
 
         // Validate the purchase summary details
         String purchaseDetails = checkoutPage.getPurchaseDetails();
@@ -192,69 +259,82 @@ public class ProductStoreTest {
         Assert.assertTrue(purchaseDetails.contains("Name: " + name), "Name mismatch in purchase details!");
 
         System.out.println("Test passed: Purchase details are correct!");
-
-        checkoutPage.confirmPurchase();
-    }
-
-    public static void waitForConditionWithMessage(WebDriver driver, ExpectedCondition<?> condition, String message) {
-        try {
-            WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
-            wait.until(condition);
-        } catch (TimeoutException e) {
-            throw new AssertionError(message, e);
-        }
     }
 
     public static void login(WebDriver driver, String username, String password) {
         LoginPage loginPage = new LoginPage(driver);
         loginPage.open();
         loginPage.openLoginModal();
-        waitForConditionWithMessage(driver,
-                ExpectedConditions.visibilityOf(loginPage.getUsernameField()),
-                "The element Username field was not found in 10 seconds!");
+
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+        wait.withMessage("The element Username field was not found in 10 seconds!")
+                .until(ExpectedConditions.visibilityOf(loginPage.getUsernameField()));
 
         loginPage.login(username, password);
-        waitForConditionWithMessage(driver,
-                ExpectedConditions.visibilityOf(loginPage.getWelcomeTextElement()),
-                "The welcome text was not found in 10 seconds!");
+    }
+
+    public static void assertLogin(WebDriver driver, String username) {
+        LoginPage loginPage = new LoginPage(driver);
+
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+        wait.withMessage("The element Welcome text was not found in 10 seconds!")
+                .until(ExpectedConditions.visibilityOf(loginPage.getWelcomeTextElement()));
 
         Assert.assertEquals(loginPage.getWelcomeText(), "Welcome " + username,
                 "Login failed or welcome message is incorrect!");
     }
 
-    public static String addProductToCart(WebDriver driver) {
+    public static List<String> addProductToCartByIndex(WebDriver driver, int index) throws InterruptedException {
         AllProductsPage allProductsPage = new AllProductsPage(driver);
 
-        waitForConditionWithMessage(driver,
-                ExpectedConditions.visibilityOf(allProductsPage.getProductNameElement()),
-                "The product name element was not found in 10 seconds!");
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+
+        wait.withMessage("The element Product name was not found in 10 seconds!")
+                .until(ExpectedConditions.visibilityOf(allProductsPage.getProductList().get(index)));
 
         ProductPage productPage = new ProductPage(driver);
-        String productName = allProductsPage.getProductName();
-        allProductsPage.selectProduct();
+        String productName = allProductsPage.getProductList().get(index).getText();
+        allProductsPage.selectProductByIndex(index);
 
-        waitForConditionWithMessage(driver,
-                ExpectedConditions.visibilityOf(productPage.getProductPriceElement()),
-                "The product price element was not found in 10 seconds!");
+        wait.withMessage("The element Product price was not found in 10 seconds!")
+                .until(ExpectedConditions.visibilityOf(productPage.getProductPriceElement()));
+
         String price = productPage.getProductPrice();
         productPage.addToCart();
-        productPage.goToCart();
 
+        wait.withMessage("The alert was not found in 10 seconds!").until(ExpectedConditions.alertIsPresent());
+
+        driver.switchTo().alert().accept();
+
+        allProductsPage.goToHome();
+
+        List<String> informations = new ArrayList<>();
+        informations.add(productName);
+        informations.add(price);
+
+        return informations;
+    }
+
+    public static void assertsInCart(WebDriver driver, String productName, String price) {
         CartPage cartPage = new CartPage(driver);
-        waitForConditionWithMessage(driver,
-                ExpectedConditions.visibilityOf(cartPage.getProductNameInTheCartElement()),
-                "The product name in the cart element was not found in 10 seconds!");
 
-        waitForConditionWithMessage(driver,
-                ExpectedConditions.visibilityOf(cartPage.getProductPriceInTheCartElement()),
-                "The product price in the cart element was not found in 10 seconds!");
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+        wait.withMessage("The element Product name in the cart was not found in 10 seconds!")
+                .until(ExpectedConditions.visibilityOf(cartPage.getProductNameInTheCartElement()));
+
+        wait.withMessage("The element Product price in the cart was not found in 10 seconds!")
+                .until(ExpectedConditions.visibilityOf(cartPage.getProductPriceInTheCartElement()));
 
         Assert.assertEquals(cartPage.getProductNamesInCart().get(0), productName,
                 "Product name in the cart does not match the selected product!");
         Assert.assertTrue(price.contains(cartPage.getProductPricesInCart().get(0)),
                 "Product price in the cart does not match the selected product!");
+    }
 
-        return price;
-
+    public static void deleteProductsInTheCartAndCheckIt(WebDriver driver) {
+        CartPage cartPage = new CartPage(driver);
+        cartPage.deleteAllItems();
+        Assert.assertTrue(cartPage.getDeleteButtons().isEmpty(),
+                "Cart is not empty after removing all items");
     }
 }
